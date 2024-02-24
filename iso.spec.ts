@@ -5,8 +5,8 @@ import fc from "fast-check";
 
 export type Type<T> = {
   arbitrary: fc.Arbitrary<T>;
-  equals: Fun<[T], Fun<[T], boolean>>;
-  identity: Fun<[T], T>;
+  equals: Fun<T, Fun<T, boolean>>;
+  identity: Fun<T, T>;
 };
 
 const _iso =
