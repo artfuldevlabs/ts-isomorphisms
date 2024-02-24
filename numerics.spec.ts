@@ -1,4 +1,4 @@
-import { identity } from "./function";
+import { identity } from "./identity";
 import { Type, iso } from "./iso.spec";
 import { sequence_equals } from "./predicate";
 import { numerics } from "./numerics";
@@ -7,16 +7,16 @@ import { List } from "./types";
 
 describe("numerics", () => {
   const Integers: Type<List<number>> = {
-    arbitrary: fc.array(fc.integer()),
-    equals: sequence_equals,
-    identity,
+    arb: fc.array(fc.integer()),
+    eq: sequence_equals,
+    id: identity,
   };
   const Strings: Type<List<string>> = {
-    arbitrary: Integers.arbitrary.map((x) =>
+    arb: Integers.arb.map((x) =>
       x.map((z) => z.toString())
     ),
-    equals: sequence_equals,
-    identity,
+    eq: sequence_equals,
+    id: identity,
   };
 
   iso(Integers)(Strings)(numerics);

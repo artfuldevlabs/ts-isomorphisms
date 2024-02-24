@@ -1,7 +1,9 @@
-import { Fun } from "./function";
+import { Morphism } from "./morphism";
 import { List } from "./types";
 
-export type Predicate<Arg> = Fun<Arg, boolean>;
+export type Predicate<Arg> = Morphism<Arg, boolean>;
+
+export type Equals<A> = Morphism<A, Predicate<A>>;
 
 export const equals =
   <A>(a: A): Predicate<A> =>

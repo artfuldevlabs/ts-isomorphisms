@@ -1,6 +1,6 @@
-import { Fun } from "./function";
+import { Morphism } from "./morphism";
 
-export type Iso<A, B> = [Fun<A, B>, Fun<B, A>];
+export type Iso<A, B> = [Morphism<A, B>, Morphism<B, A>];
 
 export const ba = <A, B>([_, ba]: Iso<A, B>): Iso<A, B>[1] => ba;
 

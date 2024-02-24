@@ -1,46 +1,26 @@
-import { Fun, compose } from "./function";
-import { inverse } from "./inverse";
-import { Iso } from "./iso";
 import fc from "fast-check";
+import { Identity } from "./identity";
+import { compose } from "./compose";
+import { Iso } from "./iso";
+import { Equals } from "./predicate";
+import { equals } from "./equals.spec";
+import { named } from "./named";
 
 export type Type<T> = {
-  arbitrary: fc.Arbitrary<T>;
-  equals: Fun<T, Fun<T, boolean>>;
-  identity: Fun<T, T>;
+  arb: fc.Arbitrary<T>;
+  eq: Equals<T>;
+  id: Identity<T>;
 };
 
-const _iso =
-  <A>(a: Type<A>) =>
-  <B>(b: Type<B>) =>
-  (iso: Iso<A, B>): void => {
-    const [f, g] = iso;
-
-    it("g.f = id", () => {
-      fc.assert(
-        fc.property(a.arbitrary, (x) =>
-          a.equals(compose(g)(f)(x))(a.identity(x))
-        )
-      );
-    });
-
-    it("f.g = id", () => {
-      fc.assert(
-        fc.property(b.arbitrary, (x) =>
-          b.equals(compose(f)(g)(x))(b.identity(x))
-        )
-      );
-    });
-  };
+const gof = named("g ∘ f");
+const fog = named("f ∘ g");
 
 export const iso =
   <A>(a: Type<A>) =>
   <B>(b: Type<B>) =>
   (iso: Iso<A, B>): void => {
-    describe("iso", () => {
-      _iso(a)(b)(iso);
+    const [f, g] = iso;
 
-      describe("inverse", () => {
-        _iso(b)(a)(inverse(iso));
-      });
-    });
+    equals(a.eq)(a.arb)(gof(compose(g)(f)))(a.id);
+    equals(b.eq)(b.arb)(fog(compose(f)(g)))(b.id);
   };
